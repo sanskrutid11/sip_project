@@ -1,0 +1,28 @@
+import sqlite3
+
+def create_database():
+    """Create a SQLite database and users table if it doesn't exist."""
+    conn = sqlite3.connect('sip_tracker.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            pan_number TEXT UNIQUE NOT NULL
+        )
+    ''')
+    conn.commit()
+    conn.close()
+    print("Database and users table created successfully.")
+
+def verify_database():
+    """Verify the tables in the database."""
+    conn = sqlite3.connect('sip_tracker.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cursor.fetchall()
+    print(f"Tables in database: {tables}")
+    conn.close()
+
+# Create and verify the database
+create_database()
+verify_database()
