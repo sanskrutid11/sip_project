@@ -1,0 +1,38 @@
+name: SIP Tracker CI/CD
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+
+    - name: Check Python Syntax
+      run: |
+        python -m py_compile add.py
+
+    - name: Build EXE File
+      run: |
+        pyinstaller --onefile --windowed add.py
+
+    - name: Upload EXE
+      uses: actions/upload-artifact@v3
+      with:
+        name: SIP-Tracker-App
+        path: dist/add.exe
